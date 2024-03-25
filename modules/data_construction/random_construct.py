@@ -22,8 +22,8 @@ def random_construct(
     shape = (sample_count, point_count)
 
     # Element-wise salting:
-    # `2 * R() * R() + R()`
-    x = 2 * random.randn(*shape) * random.randn(*shape) + random.randn(*shape)
+    # `10 * R() * R() + R()`
+    x = 10 * random.randn(*shape) * random.randn(*shape) + random.randn(*shape)
     y = x.mean(axis=1)
 
     x = x.tolist()
