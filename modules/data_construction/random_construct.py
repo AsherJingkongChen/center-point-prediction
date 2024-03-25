@@ -4,32 +4,29 @@ from .schema import SCHEMA
 
 def random_construct(
     sample_count: int,
-    vector_count: int,
-    dimension: int,
+    point_count: int,
 ) -> DataFrame:
     """
-    Constructs a random dataset of the given count and dimension
+    Constructs a random dataset from the given parameters
 
     ## Parameters
     - `sample_count`: The number of samples to generate
-    - `vector_count`: The number of vectors to generate
-    - `dimension`: The dimension of each vector
+    - `point_count`: The number of points to generate
 
     ## Returns
     - (`DataFrame`):
         - `schema`: `SCHEMA`
     """
-    from numpy import random, typing
+    from numpy import random
 
-    shape = (sample_count, vector_count, dimension)
+    shape = (sample_count, point_count)
 
     # Element-wise salting:
     # `2 * R() * R() + R()`
     x = 2 * random.randn(*shape) * random.randn(*shape) + random.randn(*shape)
+    y = x.mean(axis=1)
 
-    y: typing.NDArray = x.mean(axis=1)
-
-    x: list = x.tolist()
-    y: list = y.tolist()
+    x = x.tolist()
+    y = y.tolist()
 
     return DataFrame((x, y), schema=SCHEMA)
