@@ -18,15 +18,28 @@ def random_construct(
         - `schema`: `SCHEMA`
     """
     from numpy import random
+    from math import e as std
 
     shape = (sample_count, point_count)
+    mean = 0
 
-    # Element-wise salting:
-    # `10 * R() * R() + R()`
-    x = 10 * random.randn(*shape) * random.randn(*shape) + random.randn(*shape)
+    # Element-wise salted log-normal distribution:
+    # `NORMDIST() * NORMDIST() + NORMDIST()`
+    x = random.normal(
+        mean,
+        std,
+        shape,
+    ) * random.normal(
+        mean,
+        std,
+        shape,
+    ) + random.normal(
+        mean,
+        std,
+        shape,
+    )
     y = x.mean(axis=1)
 
     x = x.tolist()
-    y = y.tolist()
 
     return DataFrame((x, y), schema=SCHEMA)
