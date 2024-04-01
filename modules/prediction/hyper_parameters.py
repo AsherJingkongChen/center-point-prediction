@@ -1,36 +1,61 @@
 from dataclasses import dataclass
-from torch import optim
+from torch import nn, optim, Tensor
+from typing import Callable, Iterable
+
+from .optimizers import Momentum
+
+ENSEMBLE_COUNT: int = 5
 
 
 @dataclass
-class HyperParameters:
-    from torch import nn
-    from torch.optim import lr_scheduler
-    from torch import Tensor
-    from typing import Callable
+class TrainingHyperParameters:
+    hidden_node_count: int
+    activation_function: nn.Module
+    weight_initializer: Callable[[Tensor], Tensor]
+    loss_function: Callable[[Tensor, Tensor], Tensor]
+    regularization_factor: float
+    optimizer: optim.Optimizer
+    learning_epochs: int
+    learning_rate_scheduler: optim.lr_scheduler.LRScheduler | None
+    normalizer: nn.BatchNorm1d | None
 
-    HIDDEN_NODES: tuple[int, ...] = (
-        5,
-        8,
-        11,
-    )
-    ACTIVATION_FUNCTIONS: tuple[nn.Module, ...] = (nn.Tanh, nn.ReLU)
-    WEIGHT_INITIALIZERS: tuple[Callable[[Tensor], Tensor], ...] = (
-        nn.init.normal_,
-        nn.init.xavier_normal_,
-        nn.init.kaiming_normal_,
-    )
-    LOSS_FUNCTIONS: tuple[Callable[[Tensor], Tensor], ...] = (nn.functional.mse_loss,)
-    REGULARIZATION_FACTORS: tuple[float, ...] = (0.001, 0.0001)
-    OPTIMIZERS: tuple[optim.Optimizer, ...] = (
-        optim.SGD,
-        lambda *args, **kwargs: optim.SGD(*args, **kwargs, momentum=0.9),
-        optim.Adam,
-    )
-    LEARNING_EPOCHS: tuple[int, ...] = (100, 200, 300)
-    LEARNING_RATE_SCHEDULERS: tuple[lr_scheduler.LRScheduler | None, ...] = (
-        None,
-        lr_scheduler.CosineAnnealingLR,
-    )
-    EMSEMBLE_COUNTS: tuple[int, ...] = (5,)
-    NORMALIZERS: tuple[nn.BatchNorm1d | None, ...] = (None, nn.BatchNorm1d)
+    @staticmethod
+    def DOMAIN():
+        return {
+            "hidden_node_count": (
+                5,
+                8,
+                11,
+            ),
+            "activation_function": (nn.Tanh, nn.ReLU),
+            "weight_initializer": (
+                nn.init.normal_,
+                nn.init.xavier_normal_,
+                nn.init.kaiming_normal_,
+            ),
+            "loss_function": (nn.functional.mse_loss,),
+            "regularization_factor": (0.001, 0.0001),
+            "optimizer": (
+                optim.SGD,
+                Momentum,
+                optim.Adam,
+            ),
+            "learning_epochs": (100, 200, 300),
+            "learning_rate_scheduler": (
+                None,
+                optim.lr_scheduler.CosineAnnealingLR,
+            ),
+            "normalizer": (None, nn.BatchNorm1d),
+        }
+
+    @staticmethod
+    def get_all_combinations() -> Iterable["TrainingHyperParameters"]:
+        from itertools import product
+
+        domain = TrainingHyperParameters.DOMAIN()
+        return map(
+            lambda values: TrainingHyperParameters(
+                **{k: v for k, v in zip(domain, values)}
+            ),
+            product(*domain.values()),
+        )
