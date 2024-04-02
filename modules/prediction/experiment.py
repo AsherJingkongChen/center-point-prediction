@@ -87,6 +87,6 @@ for HP in TrainingHyperParameters.get_all_combinations():
 
 progress_bar.close()
 
-print(f"Top {ENSEMBLE_COUNT} hyper-parameters:")
+print(f"Top {ENSEMBLE_COUNT} hyper-parameters: ")
 for entry in top_combinations:
     print(entry)
