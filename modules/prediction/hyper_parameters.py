@@ -5,8 +5,6 @@ from typing import Callable, Iterable
 from .optimizers import Momentum
 from .lr_schedulers import CosineLR
 
-ENSEMBLE_COUNT: int = 5
-
 
 @dataclass
 class TrainingHyperParameters:
@@ -48,6 +46,18 @@ class TrainingHyperParameters:
             ),
             "normalizer": (None, nn.BatchNorm1d),
         }
+
+    @staticmethod
+    def get_all_combination_count() -> int:
+        from functools import reduce
+
+        return reduce(
+            lambda x, y: x * y,
+            map(
+                lambda values: len(values),
+                TrainingHyperParameters.DOMAIN().values(),
+            ),
+        )
 
     @staticmethod
     def get_all_combinations() -> Iterable["TrainingHyperParameters"]:
