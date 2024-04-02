@@ -3,6 +3,7 @@ from torch import nn, optim, Tensor
 from typing import Callable, Iterable
 
 from .optimizers import Momentum
+from .lr_schedulers import CosineLR
 
 ENSEMBLE_COUNT: int = 5
 
@@ -17,7 +18,7 @@ class TrainingHyperParameters:
     optimizer: optim.Optimizer
     learning_epochs: int
     learning_rate_scheduler: optim.lr_scheduler.LRScheduler | None
-    normalizer: nn.BatchNorm1d | None
+    normalizer: nn.modules.batchnorm._NormBase | None
 
     @staticmethod
     def DOMAIN():
@@ -43,7 +44,7 @@ class TrainingHyperParameters:
             "learning_epochs": (100, 200, 300),
             "learning_rate_scheduler": (
                 None,
-                optim.lr_scheduler.CosineAnnealingLR,
+                CosineLR,
             ),
             "normalizer": (None, nn.BatchNorm1d),
         }
