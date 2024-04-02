@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 from torch import nn, tensor
 from .hyper_parameters import TrainingHyperParameters
 from ..data_construction.random_construct import random_construct
