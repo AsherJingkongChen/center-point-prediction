@@ -3,24 +3,8 @@ from .hyper_parameters import TrainingHyperParameters
 from ..data_construction.random_construct import random_construct
 from tqdm.auto import tqdm
 
-def request_best_device():
-    """
-    A helper function to request the best device for the current environment
-    """
-    from torch import backends, cuda, device
-
-    if cuda.is_available():
-        return device("cuda")
-    elif backends.mps.is_available():
-        return device("mps")
-    elif backends.mkldnn.is_available():
-        return device("mkldnn")
-    else:
-        return device("cpu")
-
-# Define the arguments for the experiment
+# Define the constants for the experiment
 DEVICE = "cpu"
-HP = list(TrainingHyperParameters.get_all_combinations())[-1]
 DATA = random_construct(100, 30)
 DATA_EVALUATION = random_construct(25, 30)
 X = tensor(DATA.get_column("x"), device=DEVICE)
@@ -28,7 +12,9 @@ Y = tensor(DATA.get_column("y"), device=DEVICE).unsqueeze(1)
 X_EVALUATION = tensor(DATA_EVALUATION.get_column("x"), device=DEVICE)
 Y_EVALUATION = tensor(DATA_EVALUATION.get_column("y"), device=DEVICE).unsqueeze(1)
 
-print(f"DEVICE: {DEVICE}")
+# Define the hyper-parameters
+HP = list(TrainingHyperParameters.get_all_combinations())[-1]
+print(HP)
 
 # Define the model
 model = nn.Sequential(
@@ -86,4 +72,4 @@ with no_grad():
     loss_evaluation = HP.loss_function(model(X_EVALUATION), Y_EVALUATION)
 
 # Print the loss
-print(f'{{"loss": {{"train": {loss:.4f}, "eval": {loss_evaluation:.4f}}}}}')
+print(f'{{"loss": {{"train": {loss:.5f}, "eval": {loss_evaluation:.5f}}}}}')
