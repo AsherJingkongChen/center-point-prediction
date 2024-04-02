@@ -10,7 +10,7 @@ Please open your terminal and change the working directory to this project folde
 
 ```shell
 python3 -m pip install -r requirements.txt
-python3 -m modules.prediction.experiment
+python3 run.py
 ```
 
 ## Output

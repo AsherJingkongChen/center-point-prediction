@@ -51,7 +51,7 @@ for HP in TrainingHyperParameters.get_all_combinations():
     # Define the optimizer and the learning rate scheduler
     optimizer = HP.optimizer(
         model.parameters(),
-        weight_decay=HP.regularization_factor,  # In PyTorch, `weight_decay` is also called L2 penalty.
+        weight_decay=HP.regularization_factor, # In PyTorch, `weight_decay` is also called L2 penalty.
     )
     scheduler = (
         HP.learning_rate_scheduler(optimizer) if HP.learning_rate_scheduler else None
