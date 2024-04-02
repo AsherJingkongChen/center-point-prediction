@@ -3,7 +3,7 @@ from .hyper_parameters import TrainingHyperParameters
 from ..data_construction.random_construct import random_construct
 from tqdm.auto import tqdm
 
-# Define the constants for the experiment
+# Define the settings of the experiment
 DEVICE = "cpu"
 DATA = random_construct(100, 30)
 DATA_EVALUATION = random_construct(25, 30)
